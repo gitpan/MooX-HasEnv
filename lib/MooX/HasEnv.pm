@@ -3,7 +3,7 @@ BEGIN {
   $MooX::HasEnv::AUTHORITY = 'cpan:GETTY';
 }
 {
-  $MooX::HasEnv::VERSION = '0.001';
+  $MooX::HasEnv::VERSION = '0.002';
 }
 # ABSTRACT: Making attributes based on ENV variables
 
@@ -26,8 +26,8 @@ sub import {
 		my ( $name, $env_var, $default ) = @_;
 		my $builder = '_build_'.$name;
 		$stash->add_symbol('&'.$builder, sub {
-			my $env_value = $env_var && defined $ENV{$env_var} ? $ENV{$env_var} : undef;
-			return defined $env_value ? $env_value : ref $default eq 'CODE' ? $default->($_[0]) : $default;
+			my $env_value = defined $env_var && defined $ENV{$env_var} ? $ENV{$env_var} : undef;
+			return defined $env_value ? $env_value : defined $default ? ref $default eq 'CODE' ? $default->($_[0]) : $default : undef;
 		});
 		$stash->get_symbol("&has")->($name,
 			is => 'ro',
@@ -39,6 +39,7 @@ sub import {
 
 1;
 
+
 __END__
 =pod
 
@@ -48,7 +49,40 @@ MooX::HasEnv - Making attributes based on ENV variables
 
 =head1 VERSION
 
-version 0.001
+version 0.002
+
+=head1 SYNOPSIS
+
+  package MyApp::Config;
+
+  use MooX::HasEnv; # also adds use Moo;
+
+  has_env var => MYAPP_VARIABLE => '0';
+  has_env var_name => 'MYAPP_VARIABLE_NAME'; # no default
+  has_env foo => undef, '2';
+
+  use Path::Class;
+
+  has_env root => MYAPP_ROOT => file(__FILE__)->parent->parent->parent->absolute."";
+
+=head1 DESCRIPTION
+
+=encoding utf8
+
+=head1 SUPPORT
+
+IRC
+
+  Join #web-simple on irc.perl.org. Highlight Getty for fast reaction :).
+
+Repository
+
+  http://github.com/Getty/p5-moox-hasenv
+  Pull request and additional contributors are welcome
+
+Issue Tracker
+
+  http://github.com/Getty/p5-moox-hasenv/issues
 
 =head1 AUTHOR
 
