@@ -3,7 +3,7 @@ BEGIN {
   $MooX::HasEnv::AUTHORITY = 'cpan:GETTY';
 }
 {
-  $MooX::HasEnv::VERSION = '0.002';
+  $MooX::HasEnv::VERSION = '0.003';
 }
 # ABSTRACT: Making attributes based on ENV variables
 
@@ -26,12 +26,19 @@ sub import {
 		my ( $name, $env_var, $default ) = @_;
 		my $builder = '_build_'.$name;
 		$stash->add_symbol('&'.$builder, sub {
+			my ( $self ) = @_;
 			my $env_value = defined $env_var && defined $ENV{$env_var} ? $ENV{$env_var} : undef;
-			return defined $env_value ? $env_value : defined $default ? ref $default eq 'CODE' ? $default->($_[0]) : $default : undef;
+			return defined $env_value ?
+				$env_value :
+				defined $default ?
+					ref $default eq 'CODE' ?
+						$default->($self) :
+					$default :
+				undef;
 		});
-		$stash->get_symbol("&has")->($name,
+		$caller->can("has")->($name,
 			is => 'ro',
-			lazy_build => 1,
+			lazy => 1,
 			builder => $builder,
 		);
 	});
@@ -49,7 +56,7 @@ MooX::HasEnv - Making attributes based on ENV variables
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
