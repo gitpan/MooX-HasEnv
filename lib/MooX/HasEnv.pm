@@ -3,7 +3,7 @@ BEGIN {
   $MooX::HasEnv::AUTHORITY = 'cpan:GETTY';
 }
 {
-  $MooX::HasEnv::VERSION = '0.003';
+  $MooX::HasEnv::VERSION = '0.004';
 }
 # ABSTRACT: Making attributes based on ENV variables
 
@@ -56,7 +56,7 @@ MooX::HasEnv - Making attributes based on ENV variables
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
